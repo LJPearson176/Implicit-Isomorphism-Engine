@@ -1,0 +1,11 @@
+torch
+torch-geometric
+sentence-transformers
+supabase
+numpy
+scikit-learn
+boto3
+matplotlib
+scikit-learn
+networkx
+arxiv

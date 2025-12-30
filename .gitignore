@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.env
+
+# Data & Cache
+arxiv_source_cache/
+*.tar.gz
+*.pdf
+
+# Logs & Temp
+*.log
+.DS_Store
+
+# We KEEP the generated artifacts (evidence of the AI's work)
+# !generated_loss.py
+# !generated_optimizer.py
