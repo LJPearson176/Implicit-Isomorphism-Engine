@@ -1,4 +1,13 @@
 
+"""
+reality_check.py
+The Operator Agent.
+Closes the loop between "Simulation" and "Reality".
+
+Key Capabilities:
+1. Reality Score: Backtests simulation outputs against Ground Truth (e.g. Market Data).
+2. Bayesian Update: Adjusts the Neuro-Symbolic Translator's weights based on prediction error.
+"""
 import json
 import numpy as np
 import pandas as pd
@@ -7,6 +16,9 @@ from lob_engine import BinanceFetcher, LOBState
 import os
 
 class RealityOperator:
+    """
+    Manages the Feedback Loop (RLHF for Science).
+    """
     def __init__(self):
         print("--- 🔬 The Operator: Reality Loop Online ---")
         self.weights_file = "translator_weights.json"

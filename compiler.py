@@ -1,3 +1,13 @@
+"""
+compiler.py
+The Synthesis Agent.
+Converts abstract mathematical plans into executable Python artifacts.
+
+Key Capabilities:
+1. compile: Writes code to disk (`generated_loss.py`) and handles imports.
+2. auto_synthesize: The full "Agentic Loop" -> Load Edges -> Translate -> Compile -> Verify -> Fix.
+3. compile_isomorphism: Helper for the Scout Protocol to compile rapid prototypes.
+"""
 import os
 import json
 import random

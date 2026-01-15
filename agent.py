@@ -1,6 +1,14 @@
+"""
+agent.py
+The Interface Logic for the Antigravity Engine.
+Capabilities:
+1. ResearchAgent: Neuro-Symbolic Search (Vector + GNN).
+2. search_arxiv: Direct ArXiv API wrapper for finding papers.
+"""
 import os
 import torch
 import json
+import arxiv # Added for search_arxiv capability
 from data_engine import DataEngine
 from models import WeightedHeteroGraphConv, DistMultDecoder
 from sentence_transformers import SentenceTransformer
@@ -13,6 +21,22 @@ load_env()
 MODEL_PATH = "model_state.pt" 
 HIDDEN_CHANNELS = 64
 OUT_CHANNELS = 64
+
+def search_arxiv(query, max_results=5):
+    """
+    Direct interface to ArXiv API (no GNN, just Relevance).
+    Used by Scout Agent for quick "Value Finding".
+    """
+    print(f"🔎 ArXiv Search: '{query}'")
+    client = arxiv.Client()
+    search = arxiv.Search(
+        query = query,
+        max_results = max_results,
+        sort_by = arxiv.SortCriterion.Relevance
+    )
+    results = list(client.results(search))
+    return results
+
 
 class ResearchAgent:
     def __init__(self):

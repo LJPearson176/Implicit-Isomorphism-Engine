@@ -1,3 +1,15 @@
+"""
+models.py
+The Graph Neural Network (GNN) Brain.
+
+Key Components:
+1. WeightedHeteroGraphConv:
+   - Uses SAGEConv (GraphSAGE) logic under the hood.
+   - Adds a learnable 'Trust Gate' (Sigmoid) for each edge type.
+   - This allows the model to ignore noisy citations and focus on 'Isomorphically Valid' bridges.
+
+Note: Phase 36 (Singularity) evolves this to use GATv2Conv in 'models_v2.py'.
+"""
 import torch
 import torch.nn as nn
 import torch.nn.functional as F

@@ -1,8 +1,21 @@
 
+"""
+singularity.py
+The Singularity Node.
+Enables Recursive Self-Improvement by allowing the system to edit its own source code.
+
+Key Capabilities:
+1. Introspection: Reads own source code (`models.py`).
+2. Diagnosis: Identifies algorithmic bottlenecks (e.g. Dense Matrix usage).
+3. Rewrite: Synthesizes optimized code (`models_v2.py`) using Isomorphisms from CS literature.
+"""
 import os
 import re
 
 class SingularityAgent:
+    """
+    The Self-Refactoring Agent.
+    """
     def __init__(self):
         print("--- 🤖 The Singularity Node: Recursive Self-Optimization ---")
         self.target_file = "models.py"

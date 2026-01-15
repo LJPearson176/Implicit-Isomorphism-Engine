@@ -1,3 +1,16 @@
+"""
+translator.py
+The Cognitive Engine of the System.
+Combines Symbolic AI (Regex) with Connectionist AI (DeepSeek LLM).
+
+Key Capabilities:
+1. EquationExtractor: Regex-based extraction of math from LaTeX sources.
+2. NeuroSymbolicTranslator:
+   - map_variables: Semantic alignment using LLM.
+   - rewrite_equation: Precise symbolic string replacement.
+   - generate_code: LLM-based code synthesis.
+   - fix_code: Self-Correction loop for runtime errors.
+"""
 import torch
 import re
 import json

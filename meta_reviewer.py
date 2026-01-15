@@ -1,10 +1,22 @@
 
+"""
+meta_reviewer.py
+The Architect Agent.
+Responsible for Meta-Cognition: thinking about what the system is thinking about.
+
+Key Capabilities:
+1. Meta-Loss Calculation: Scores discoveries based on Novelty (Domain Distance) and Utility (Pragmatism).
+2. Topological Gap Analysis: Identifies "Structural Holes" in the graph to direct the Scout.
+"""
 import os
 import glob
 import re
 import numpy as np
 
 class MetaReviewer:
+    """
+    Evaluates the system's own hypothesis reports to identify high-value science.
+    """
     def __init__(self):
         print("--- 🏛️ The Architect: Meta-Reviewer Online ---")
         self.reports_dir = "."

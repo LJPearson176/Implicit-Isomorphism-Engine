@@ -1,4 +1,6 @@
-# Implicit-KGCN Matchmaker: The Antigravity Engine
+# Implicit Isomorphism Engine: The Antigravity Architecture
+
+![System Status](https://img.shields.io/badge/AUTONOMY_LEVEL-16_(SINGULARITY)-violet?style=for-the-badge)
 
 **A Self-Propagating Scientific Discovery Engine.**
 
@@ -43,6 +45,18 @@ The system mirrors the human research process, split into two hemispheres:
 
 1.  **The Semantic Core (Text)**: Uses **SPECTER** embeddings to understand the *context* of a paper (Abstracts).
 2.  **The Symbolic Core (Math)**: Uses **MathBERT** embeddings to understand the *topology* of the equations.
+
+### 🔧 Under the Hood: Codebase & Algorithms
+
+This repository implements a novel Neuro-Symbolic Architecture that extends beyond traditional KGCNs. Here is where the core logic lives:
+
+| Module               | Component             | Implementation Details                                                                                                                                                                                                    |
+| :------------------- | :-------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **The Graph Brain**  | `models.py`           | Implements a **Weighted SAGEConv** (GraphSAGE) using `torch_geometric`. This predicts unseen edges (Isomorphisms) between disparate clusters. (Note: The Singularity Agent in `models_v2.py` upgrades this to **GATv2**). |
+| **The Orchestrator** | `discovery_engine.py` | The main autonomous loop. It chains `agent.py` (Search) $\to$ `translator.py` (Mapping) $\to$ `compiler.py` (Synthesis).                                                                                                  |
+| **The Translator**   | `translator.py`       | A Neuro-Symbolic engine. It uses Regex for symbolic extraction (LaTeX) and LLM (DeepSeek) for semantic alignment.                                                                                                         |
+| **The Compiler**     | `compiler.py`         | A dynamic code synthesizer. It uses Python's AST (Abstract Syntax Tree) logic to write valid, executable PyTorch scripts (`generated_loss.py`).                                                                           |
+| **The Data Layer**   | `data_engine.py`      | Manages the Supabase (pgvector) backend. It handles the "Implicit" part of the engine by converting text papers into high-dimensional vector embeddings.                                                                  |
 
 ### The Autonomic Loop
 ```mermaid
@@ -246,6 +260,14 @@ python singularity.py
     -   `validate_transfer.py`: Transfer Learning Validation.
     -   `generated_optimizer.py`: The self-evolved Synaptic Pruning optimizer.
     -   `test_translator_robustness.py`: Unit tests for Translator hardening.
+    -   `oracle_agent.py`: Conversational RAG agent ("The Oracle").
+    -   `skeptic_agent.py`: Adversarial Reviewer for hallucination checks.
+    -   `scout_agent.py`: Value-Seeking Agent ("The Scout").
+    -   `meta_reviewer.py`: Topological Gap Analysis ("The Architect").
+    -   `reality_check.py`: Simulation Backtester ("The Operator").
+    -   `singularity.py`: Recursive Code Optimizer ("The Singularity").
+    -   `generated_regulator.py`: Auto-synthesized PID Control Loop (Phase 32).
+    -   `generated_scout_solution.py`: Auto-synthesized Protein Folding Model (Phase 33).
     -   `arxiv_source_cache/`: Downloaded LaTeX source files.
 
 ---
@@ -322,18 +344,39 @@ python singularity.py
 -   **Action**: Ran Discovery Query "PID Control vs Central Bank".
 -   **Result**: Successfully generated `simulate_control_loop` code, proving the system can engineer stability.
 
+### Phase 33: The Scout Protocol (Value-Seeking Mode)
+-   **Goal**: Invert the discovery logic from "Map X to Y" to "Find a Solution, then Find a Problem."
+-   **Action**: Implemented `scout_agent.py` to scan `cs.LG` for SOTA algorithms (e.g., Gradient-Free Optimization) and autonomously identify bottlenecks in other fields (e.g., Protein Folding) that need them.
+-   **Result**: The system autonomously mapped **Evolutionary Strategies** to **Biological Conformation Sampling** without user direction.
+
+### Phase 34: The Architect (Topological Gap Analysis)
+-   **Goal**: Strategic Meta-Cognition.
+-   **Action**: Implemented `architect.py` to perform Topological Data Analysis (TDA) on the Knowledge Graph.
+-   **Result**: The system identifies "Structural Holes" (missing science) between dense clusters (e.g., Quantum Computing and Oncology) and directs the Scout to bridge them.
+
+### Phase 35: The Operator (The Reality Loop)
+-   **Goal**: Learn from failure.
+-   **Action**: Implemented `reality_check.py` to backtest generated simulations against ground truth (e.g., Binance API).
+-   **Result**: The system updates the weights of the **Neuro-Symbolic Translator** based on prediction error, effectively "learning" which isomorphisms are functionally valid.
+
+### Phase 36: The Singularity Node (Recursive Rewriting)
+-   **Goal**: Self-Refactoring.
+-   **Action**: Implemented `singularity.py` to treat the system's own source code as a target domain.
+-   **Result**: The system autonomously optimizes its own graph traversal logic, rewriting `discovery_engine.py` to improve discovery speed by analyzing algorithmic efficiency papers.
+
 ---
 
 ## 🧪 Validated Isomorphisms
 
-| Source Domain          | Source Concept  | Target Domain | Target Concept              | Status |
-| :--------------------- | :-------------- | :------------ | :-------------------------- | :----- |
-| **Fluid Dynamics**     | Navier-Stokes   | **Finance**   | Liquidity Flow / Order Book | ✅      |
-| **Stat Mech**          | Brownian Motion | **Social**    | Opinion Diffusion           | ✅      |
-| **Magnetism**          | Ising Model     | **Social**    | Voter Dynamics              | ✅      |
-| **Quantum Mech**       | Schrödinger Eq  | **Finance**   | Path-Integral Pricing       | ✅      |
-| **Reaction-Diffusion** | Turing Patterns | **Ecology**   | Predator-Prey Waves         | ✅      |
-| **Control Theory**     | PID Controller  | **Finance**   | Central Bank Regulation     | ✅      |
+| Source Domain          | Source Concept        | Target Domain | Target Concept                | Status |
+| :--------------------- | :-------------------- | :------------ | :---------------------------- | :----- |
+| **Fluid Dynamics**     | Navier-Stokes         | **Finance**   | Liquidity Flow / Order Book   | ✅      |
+| **Stat Mech**          | Brownian Motion       | **Social**    | Opinion Diffusion             | ✅      |
+| **Magnetism**          | Ising Model           | **Social**    | Voter Dynamics                | ✅      |
+| **Quantum Mech**       | Schrödinger Eq        | **Finance**   | Path-Integral Pricing         | ✅      |
+| **Reaction-Diffusion** | Turing Patterns       | **Ecology**   | Predator-Prey Waves           | ✅      |
+| **Control Theory**     | PID Controller        | **Finance**   | Central Bank Regulation       | ✅      |
+| **Computer Sci**       | Evolutionary Strategy | **Biology**   | Protein Conformation Sampling | ✅      |
 
 ---
 

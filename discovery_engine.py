@@ -1,3 +1,15 @@
+"""
+discovery_engine.py
+The Orchestrator of the Antigravity Pipeline.
+
+Pipeline Phases:
+1. Search (agent.py): Finds relevant source papers.
+2. Ingest (fetch_source.py): Downloads LaTeX source.
+3. Extract (translator.py): Regex equation extraction.
+4. Translate (translator.py): Neuro-Symbolic mapping (LLM).
+5. Review (skeptic_agent.py): Adversarial critique.
+6. Compile (compiler.py): Python code synthesis.
+"""
 import os
 import json
 import re
