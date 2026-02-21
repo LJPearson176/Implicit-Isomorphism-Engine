@@ -11,7 +11,6 @@ Key Capabilities:
 import os
 import glob
 import re
-import numpy as np
 
 class MetaReviewer:
     """
@@ -20,6 +19,10 @@ class MetaReviewer:
     def __init__(self):
         print("--- 🏛️ The Architect: Meta-Reviewer Online ---")
         self.reports_dir = "."
+        self.known_pairs = {
+            frozenset(["physics", "q-fin"]), # Standard Econophysics
+            frozenset(["cs", "q-bio"]),      # Bioinformatics
+        }
         
     def load_hypotheses(self):
         """
@@ -75,14 +78,8 @@ class MetaReviewer:
         if s_root == t_root:
             return 0.1 # Incremental
         
-        known_pairs = [
-            ("physics", "q-fin"), # Standard Econophysics
-            ("cs", "q-bio"),      # Bioinformatics
-        ]
-        
         # Check for super-novelty (unseen pairs)
-        pair = sorted([s_root, t_root])
-        if tuple(pair) in [tuple(sorted(kp)) for kp in known_pairs]:
+        if frozenset([s_root, t_root]) in self.known_pairs:
             return 0.6 # Interdisciplinary but known
             
         return 1.0 # Radical/Novel
