@@ -195,8 +195,6 @@ class DreamEngine:
             else:
                 print("   No suitable customer found for this technology yet.")
                 
-            time.sleep(1)
-            
         return hypotheses
         
     def generate_report(self, hypotheses):
