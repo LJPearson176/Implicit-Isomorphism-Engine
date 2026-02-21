@@ -1,6 +1,23 @@
 
 import unittest
 import json
+import sys
+from unittest.mock import MagicMock
+
+# Mock dependencies
+sys.modules["torch"] = MagicMock()
+sys.modules["requests"] = MagicMock()
+
+# Mock verify_setup to avoid importing data_engine
+mock_verify_setup = MagicMock()
+def mock_load_env():
+    pass
+mock_verify_setup.load_env = mock_load_env
+sys.modules["verify_setup"] = mock_verify_setup
+
+# Mock ollama to avoid import errors if translator imports it
+sys.modules["ollama"] = MagicMock()
+
 from translator import NeuroSymbolicTranslator
 import logging
 
