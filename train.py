@@ -103,11 +103,6 @@ def train_matchmaker(epochs=100, lr=0.001):
              print(f"Epoch {epoch}: NaN detected in node embeddings (z_dict)")
              break
              
-        # DEBUG: Print Norms
-        if epoch == 0:
-            z_norm = z_dict['paper'].norm(p=2, dim=-1).mean()
-            print(f"DEBUG: Mean Z Norm: {z_norm.item()}")
-
         # Forward Pass (Decoder) -> Link Prediction
         
         # 1. Positive Scores
