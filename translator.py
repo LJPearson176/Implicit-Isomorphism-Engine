@@ -236,13 +236,25 @@ class NeuroSymbolicTranslator:
         sorted_mapping = sorted(mapping.items(), key=lambda x: len(x[0]), reverse=True)
         
         for src, tgt in sorted_mapping:
-            # Use regex to replace whole words only to avoid partial matches
             safe_src = re.escape(src)
-            # Try word boundary first
-            translated_eq = re.sub(rf"(?<!\\)\b{safe_src}\b", tgt, translated_eq) 
-            # Fallback for things without clear word boundaries in latex (like symbols next to '}')
-            if src in translated_eq:
-                 translated_eq = translated_eq.replace(src, tgt)
+
+            # Determine regex pattern based on source type to avoid partial matches
+            if src.startswith("\\"):
+                # LaTeX Command (e.g. \alpha, \mathbf{x})
+                if src[-1].isalpha() or src[-1].isdigit():
+                    # Ends with alphanumeric char (e.g. \alpha): Enforce word boundary at end
+                    # No boundary at start because \ is non-word
+                    # Use (?![a-zA-Z]) instead of \b because \b fails if followed by _ (e.g. \alpha_bet)
+                    pattern = rf"(?<!\\){safe_src}(?![a-zA-Z])"
+                else:
+                    # Ends with non-word (e.g. \mathbf{x} ends in }): boundary check is unreliable
+                    pattern = rf"(?<!\\){safe_src}"
+            else:
+                # Standard Variable (e.g. x, P)
+                # Use boundaries at both ends
+                pattern = rf"(?<!\\)\b{safe_src}\b"
+
+            translated_eq = re.sub(pattern, tgt, translated_eq)
             
         return translated_eq
 
