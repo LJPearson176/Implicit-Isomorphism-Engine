@@ -135,7 +135,6 @@ def run_discovery_pipeline(query="How does Fluid Turbulence relate to Financial 
     log(f"TRANSLATED ({target_domain}):\n{translated_eq}")
     
     # --- PHASE 28: THE HIVE MIND (Skeptic Review) ---
-    import json
     try:
         with open("system_config.json", "r") as f:
             config = json.load(f)
