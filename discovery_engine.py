@@ -13,6 +13,7 @@ Pipeline Phases:
 import os
 import json
 import re
+import asyncio
 from agent import ResearchAgent
 from fetch_source import fetch_source
 from translator import EquationExtractor, NeuroSymbolicTranslator
@@ -26,7 +27,7 @@ def find_tex_files(directory):
                 tex_files.append(os.path.join(root, file))
     return tex_files
 
-def run_discovery_pipeline(query="How does Fluid Turbulence relate to Financial Volatility?", target_domain="Financial Markets"):
+async def run_discovery_pipeline(query="How does Fluid Turbulence relate to Financial Volatility?", target_domain="Financial Markets"):
     """
     Runs the full pipeline strings -> code.
     Returns a dict with all artifacts for UI/API usage.
@@ -113,7 +114,7 @@ def run_discovery_pipeline(query="How does Fluid Turbulence relate to Financial 
     translator = NeuroSymbolicTranslator()
     
     # 4a. Map Variables (Pass Target Domain)
-    mapping = translator.map_variables(top_paper.get('abstract', ''), target_eq, target_domain=target_domain)
+    mapping = await translator.map_variables(top_paper.get('abstract', ''), target_eq, target_domain=target_domain)
     result_payload["mapping"] = mapping
     
     # CIRCUIT BREAKER
@@ -148,7 +149,10 @@ def run_discovery_pipeline(query="How does Fluid Turbulence relate to Financial 
         skeptic = SkepticAgent()
         print("\n--- [Step 4b] Adversarial Peer Review ---")
         
-        approved, critique = skeptic.critique(top_paper.get('abstract', ''), mapping, target_domain)
+        # skeptic.critique is still synchronous, which is fine, but we could wrap it.
+        # For minimal changes, we leave it sync, or wrap it if we want full non-blocking.
+        # Let's wrap it to be consistent with performance focus.
+        approved, critique = await asyncio.to_thread(skeptic.critique, top_paper.get('abstract', ''), mapping, target_domain)
         
         if not approved:
             print(f"❌ SKEPTIC REJECTED MAPPING: {critique}")
@@ -162,7 +166,7 @@ def run_discovery_pipeline(query="How does Fluid Turbulence relate to Financial 
 
     print("\n--- [Step 5] Auto-Compilation ---")
     # Pass Target Domain to Code Generator
-    code = translator.generate_code(translated_eq, target_domain=target_domain)
+    code = await translator.generate_code(translated_eq, target_domain=target_domain)
     result_payload["generated_code"] = code
     log(f"\n>> AI Generated Code:\n{code}")
     
@@ -187,4 +191,4 @@ if __name__ == "__main__":
         q = sys.argv[1]
     if len(sys.argv) > 2:
         d = sys.argv[2]
-    run_discovery_pipeline(q, d)
+    asyncio.run(run_discovery_pipeline(q, d))

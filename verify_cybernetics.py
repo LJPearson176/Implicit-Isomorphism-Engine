@@ -1,8 +1,9 @@
 
 from translator import NeuroSymbolicTranslator
 import json
+import asyncio
 
-def verify_cybernetics():
+async def verify_cybernetics():
     print("--- Verifying Phase 32: Cybernetics Capability ---")
     
     # 1. The Source: A standard PID Control Equation (Frequency domain or Time domain)
@@ -15,7 +16,7 @@ def verify_cybernetics():
     
     # 2. Test Variable Mapping
     print(f"\n[Step 1] Mapping Variables for '{target_domain}'...")
-    mapping = translator.map_variables(context, source_eq, target_domain=target_domain)
+    mapping = await translator.map_variables(context, source_eq, target_domain=target_domain)
     print(f"Mapping Result: {json.dumps(mapping, indent=2)}")
     
     # Check for critical control terms
@@ -32,7 +33,7 @@ def verify_cybernetics():
     translated_eq = translator.rewrite_equation(source_eq, mapping)
     print(f"Translated Equation: {translated_eq}")
     
-    code = translator.generate_code(translated_eq, target_domain=target_domain)
+    code = await translator.generate_code(translated_eq, target_domain=target_domain)
     
     print(f"\n[Step 3] Verifying Code Structure...")
     if "simulate_control_loop" in code:
@@ -47,4 +48,4 @@ def verify_cybernetics():
     print(code[:500] + "...")
 
 if __name__ == "__main__":
-    verify_cybernetics()
+    asyncio.run(verify_cybernetics())

@@ -1,7 +1,8 @@
 from translator import NeuroSymbolicTranslator
 import json
+import asyncio
 
-def verify_social_mapping():
+async def verify_social_mapping():
     print("--- Phase 16c: Verify Physics -> Social Science Isomorphism ---")
     
     # 1. Simulate an Ising Model Hamiltonian (Physics)
@@ -19,7 +20,7 @@ def verify_social_mapping():
     target_domain = "Social Science"
     
     print(f">> Attempting Mapping to {target_domain}...")
-    mapping = translator.map_variables(context, source_eq, target_domain=target_domain)
+    mapping = await translator.map_variables(context, source_eq, target_domain=target_domain)
     
     if mapping:
         print(f"✅ Mapping Successful:\n{json.dumps(mapping, indent=2)}")
@@ -42,4 +43,4 @@ def verify_social_mapping():
         print("❌ Mapping Failed.")
 
 if __name__ == "__main__":
-    verify_social_mapping()
+    asyncio.run(verify_social_mapping())

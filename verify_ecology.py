@@ -1,7 +1,8 @@
 from translator import NeuroSymbolicTranslator
 import json
+import asyncio
 
-def verify_ecology_mapping():
+async def verify_ecology_mapping():
     print("--- Phase 14c: Verify Physics -> Ecology Isomorphism ---")
     
     # 1. Simulate a Physics Equation (Reaction-Diffusion)
@@ -21,7 +22,7 @@ def verify_ecology_mapping():
     target_domain = "Ecology"
     
     print(f">> Attempting Mapping to {target_domain}...")
-    mapping = translator.map_variables(context, source_eq, target_domain=target_domain)
+    mapping = await translator.map_variables(context, source_eq, target_domain=target_domain)
     
     if mapping:
         print(f"✅ Mapping Successful:\n{json.dumps(mapping, indent=2)}")
@@ -44,4 +45,4 @@ def verify_ecology_mapping():
         print("❌ Mapping Failed.")
 
 if __name__ == "__main__":
-    verify_ecology_mapping()
+    asyncio.run(verify_ecology_mapping())

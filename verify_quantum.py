@@ -1,7 +1,8 @@
 from translator import NeuroSymbolicTranslator
 import json
+import asyncio
 
-def verify_quantum_mapping():
+async def verify_quantum_mapping():
     print("--- Phase 17c: Verify Quantum Physics -> Quantum Finance Isomorphism ---")
     
     # 1. Simulate Schrödinger Equation (Physics)
@@ -18,7 +19,7 @@ def verify_quantum_mapping():
     target_domain = "Quantum Finance"
     
     print(f">> Attempting Mapping to {target_domain}...")
-    mapping = translator.map_variables(context, source_eq, target_domain=target_domain)
+    mapping = await translator.map_variables(context, source_eq, target_domain=target_domain)
     
     if mapping:
         print(f"✅ Mapping Successful:\n{json.dumps(mapping, indent=2)}")
@@ -41,4 +42,4 @@ def verify_quantum_mapping():
         print("❌ Mapping Failed.")
 
 if __name__ == "__main__":
-    verify_quantum_mapping()
+    asyncio.run(verify_quantum_mapping())
