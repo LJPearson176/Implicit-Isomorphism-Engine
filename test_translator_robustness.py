@@ -1,4 +1,14 @@
 
+import sys
+from unittest.mock import MagicMock
+
+# Mock dependencies to run tests in restricted environment
+sys.modules['torch'] = MagicMock()
+sys.modules['requests'] = MagicMock()
+sys.modules['guardrail'] = MagicMock()
+sys.modules['verify_setup'] = MagicMock()
+sys.modules['ollama'] = MagicMock()
+
 import unittest
 import json
 from translator import NeuroSymbolicTranslator
