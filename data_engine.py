@@ -4,7 +4,6 @@ from sentence_transformers import SentenceTransformer
 import supabase
 from supabase import create_client, Client
 from torch_geometric.data import HeteroData
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
 class DataEngine:
     def __init__(self):
@@ -124,67 +123,62 @@ class DataEngine:
         explicit_edges = [[], []]
         implicit_edges = [[], []]
 
-        def process_paper(i, p):
-            import time
-            local_implicit = []
-            local_explicit = []
-            p_id = p['id']
-            p_embedding = p['embedding']
-            
-            # Retry mechanism
-            max_retries = 3
-            
-            # 1. Implicit Matches (RPC)
-            for attempt in range(max_retries):
-                try:
-                    rpc_params = {
-                        "query_embedding": p_embedding,
-                        "match_threshold": match_threshold,
-                        "match_count": 10
-                    }
-                    matches = self.supabase.rpc("match_papers", rpc_params).execute()
-                    for m in matches.data:
-                        target_id = m['id']
-                        if target_id != p_id and target_id in id_to_idx:
-                            target_idx = id_to_idx[target_id]
-                            local_implicit.append((i, target_idx))
-                    break # Success
-                except Exception as e:
-                    if attempt == max_retries - 1:
-                         # meaningful log only on final failure
-                         pass # print(f"RPC Error for {p_id}: {e}")
-                    time.sleep(0.5 * (attempt + 1))
+        # Optimization: Batch processing instead of N+1 queries
+        paper_uuids = [p['id'] for p in papers_data]
 
-            # 2. Explicit Citations
-            for attempt in range(max_retries):
-                try:
-                    citations = self.supabase.table("citations").select("target_id").eq("source_id", p_id).execute()
-                    for c in citations.data:
-                        target_id = c['target_id']
-                        if target_id in id_to_idx:
-                            target_idx = id_to_idx[target_id]
-                            local_explicit.append((i, target_idx))
-                    break # Success
-                except Exception as e:
-                    time.sleep(0.5 * (attempt + 1))
+        # 1. Implicit Matches (Batch RPC)
+        import time
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                rpc_params = {
+                    "query_ids": paper_uuids,
+                    "match_threshold": match_threshold,
+                    "match_count": 10
+                }
+                # Note: Requires 'match_papers_batch' RPC to be installed in DB
+                matches = self.supabase.rpc("match_papers_batch", rpc_params).execute()
                 
-            return local_implicit, local_explicit
+                for m in matches.data:
+                    source_id = m['source_id']
+                    target_id = m['target_id']
 
-        print(f"Building edges for {len(papers_data)} papers in parallel (Workers=4)...")
-        with ThreadPoolExecutor(max_workers=4) as executor:
-            future_to_idx = {executor.submit(process_paper, i, p): i for i, p in enumerate(papers_data)}
-            
-            for future in as_completed(future_to_idx):
-                try:
-                    res_imp, res_exp = future.result()
-                    for src, dst in res_imp:
-                        implicit_edges[0].append(src)
-                        implicit_edges[1].append(dst)
-                    for src, dst in res_exp:
-                        explicit_edges[0].append(src)
-                        explicit_edges[1].append(dst)
-                except Exception as e:
-                    print(f"Thread Error: {e}")
+                    if source_id in id_to_idx and target_id in id_to_idx:
+                        src_idx = id_to_idx[source_id]
+                        target_idx = id_to_idx[target_id]
+
+                        if src_idx != target_idx:
+                            implicit_edges[0].append(src_idx)
+                            implicit_edges[1].append(target_idx)
+                break # Success
+            except Exception as e:
+                if attempt == max_retries - 1:
+                    print(f"Batch RPC Error: {e}")
+                time.sleep(0.5 * (attempt + 1))
+
+        # 2. Explicit Citations (Batch Query)
+        for attempt in range(max_retries):
+            try:
+                # Fetch all citations where source is in our batch
+                citations = self.supabase.table("citations") \
+                    .select("source_id, target_id") \
+                    .in_("source_id", paper_uuids) \
+                    .execute()
+
+                for c in citations.data:
+                    source_id = c['source_id']
+                    target_id = c['target_id']
+
+                    if source_id in id_to_idx and target_id in id_to_idx:
+                        src_idx = id_to_idx[source_id]
+                        target_idx = id_to_idx[target_id]
+                        explicit_edges[0].append(src_idx)
+                        explicit_edges[1].append(target_idx)
+                break # Success
+            except Exception as e:
+                if attempt == max_retries - 1:
+                    print(f"Batch Citation Error: {e}")
+                time.sleep(0.5 * (attempt + 1))
 
         if explicit_edges[0]:
             data['paper', 'cites', 'paper'].edge_index = torch.tensor(explicit_edges, dtype=torch.long)
