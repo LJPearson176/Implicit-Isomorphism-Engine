@@ -2,7 +2,8 @@ import torch
 import numpy as np
 import json
 from math_engine import MathEmbedder
-from translator import VariableMapper
+from translator import NeuroSymbolicTranslator
+import asyncio
 
 # Calibration Set: A subset of standard Physics laws from AI Feynman (Feynman Lectures)
 FEYNMAN_EQUATIONS = [
@@ -31,7 +32,7 @@ FINANCIAL_EQUATIONS = [
     {"id": "FIN.NOISE.2", "latex": r"A = L + E", "type": "noise"}
 ]
 
-def run_benchmark():
+async def run_benchmark():
     print("Loading MathEmbedder (The 'Eyes')...")
     embedder = MathEmbedder() # Loads MathBERT
     
@@ -80,8 +81,8 @@ def run_benchmark():
     source = FEYNMAN_EQUATIONS[3]['latex'] # Diffusion
     target_domain = "Quantitative Finance (Black-Scholes)"
     
-    mapper = VariableMapper() # Uses Ollama
-    mapping = mapper.map_concepts(source, target_domain)
+    mapper = NeuroSymbolicTranslator()
+    mapping = await mapper.map_variables(context="Diffusion", equation_tex=source, target_domain=target_domain)
     
     print(f"Mapping Proposed: {json.dumps(mapping, indent=2)}")
     # Heuristic check: Did it map 'n' (concentration) to something like 'V' (Value) or 'P' (Price)?
@@ -96,4 +97,4 @@ def run_benchmark():
 if __name__ == "__main__":
     from verify_setup import load_env
     load_env()
-    run_benchmark()
+    asyncio.run(run_benchmark())

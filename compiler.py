@@ -12,6 +12,7 @@ import os
 import json
 import random
 import time
+import asyncio
 from translator import NeuroSymbolicTranslator
 from data_engine import DataEngine
 
@@ -55,7 +56,7 @@ class Compiler:
             print(f"Compilation Failed: {e}")
             return False
 
-    def compile_isomorphism(self, bridge_edge):
+    async def compile_isomorphism(self, bridge_edge):
         """
         Compiles a specific isomorphism bridge into executable code.
         Used by the Scout Protocol.
@@ -68,7 +69,7 @@ class Compiler:
         
         # 2. Generate Code
         # We pass the equation name + mapping as the 'translated_eq' to guide the LLM
-        code = self.translator.generate_code(eq_context, target_domain=bridge_edge['target_domain'])
+        code = await self.translator.generate_code(eq_context, target_domain=bridge_edge['target_domain'])
         
         # 3. Compile
         if code:
@@ -79,7 +80,7 @@ class Compiler:
         
         return None
 
-    def auto_synthesize(self, edges_file="bridge_edges.json"):
+    async def auto_synthesize(self, edges_file="bridge_edges.json"):
         """
         The Agentic Workflow:
         1. Load Bridge Edges
@@ -166,19 +167,20 @@ class Compiler:
             except:
                 return "dS = mu S dt + sigma S dW" # Fallback
         
-        extracted_eq = query_ollama(equation_prompt)
+        # Make query_ollama non-blocking too
+        extracted_eq = await asyncio.to_thread(query_ollama, equation_prompt)
         print(f"Inferred Equation: {extracted_eq[:50]}...")
         
         # Now Execute Pipeline
         context = f"Paper: {title}. Abstract: {abstract}."
         
         print(f"Translating to {target_domain}...")
-        mapping = self.translator.map_variables(context, extracted_eq, target_domain=target_domain)
+        mapping = await self.translator.map_variables(context, extracted_eq, target_domain=target_domain)
         
         if mapping:
             print("Mapping found. Generating Code...")
             translated_eq = self.translator.rewrite_equation(extracted_eq, mapping)
-            code = self.translator.generate_code(translated_eq, target_domain=target_domain)
+            code = await self.translator.generate_code(translated_eq, target_domain=target_domain)
             
             if code:
                 self.compile(code)
@@ -196,7 +198,7 @@ class Compiler:
                     
                     # Fix
                     # We can ask LLM to fix syntax errors
-                    fixed_code = self.translator.fix_code(code, check['error'], target_domain)
+                    fixed_code = await self.translator.fix_code(code, check['error'], target_domain)
                     if fixed_code:
                          self.compile(fixed_code)
                          print(">> CORRECTION APPLIED. Re-verifying...")
@@ -215,4 +217,4 @@ class Compiler:
 
 if __name__ == "__main__":
     c = Compiler()
-    c.auto_synthesize()
+    asyncio.run(c.auto_synthesize())

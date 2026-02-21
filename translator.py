@@ -19,6 +19,7 @@ import os
 import tarfile
 import requests
 import io
+import asyncio
 from guardrail import validate_mapping
 from verify_setup import load_env
 
@@ -112,7 +113,7 @@ class NeuroSymbolicTranslator:
     def __init__(self, model_name="deepseek-r1:7b"):
         self.model_name = model_name
 
-    def map_variables(self, context_text, equation_tex, target_domain="Financial Markets"):
+    async def map_variables(self, context_text, equation_tex, target_domain="Financial Markets"):
         """
         Asks LLM to map Source Variables -> Target Variables (e.g. Finance, Ecology).
         Includes a feedback loop for Dimensional Rigor.
@@ -170,9 +171,12 @@ class NeuroSymbolicTranslator:
         
         for attempt in range(max_retries):
             print(f"Attempt {attempt+1} to map variables...")
-            response = ollama.chat(model=self.model_name, messages=[
+
+            # Run blocking I/O in a separate thread
+            response = await asyncio.to_thread(ollama.chat, model=self.model_name, messages=[
                 {'role': 'user', 'content': prompt}
             ])
+
             try:
                 # Extract JSON
                 json_str = response['message']['content']
@@ -246,7 +250,7 @@ class NeuroSymbolicTranslator:
             
         return translated_eq
 
-    def generate_code(self, translated_eq, target_domain="Financial Markets"):
+    async def generate_code(self, translated_eq, target_domain="Financial Markets"):
         """
         Generates Python code for the translated equation.
         - Finance: PyTorch Loss (SDE/PINN)
@@ -347,7 +351,7 @@ class NeuroSymbolicTranslator:
             """
         
         import ollama
-        response = ollama.chat(model=self.model_name, messages=[
+        response = await asyncio.to_thread(ollama.chat, model=self.model_name, messages=[
             {'role': 'user', 'content': prompt}
         ])
         code = response['message']['content']
@@ -361,7 +365,8 @@ class NeuroSymbolicTranslator:
             code = re.sub(r'```', '', code).strip()
             
         return code.strip()
-    def fix_code(self, broken_code, error_message, target_domain="Financial Markets"):
+
+    async def fix_code(self, broken_code, error_message, target_domain="Financial Markets"):
         """
         Self-Correction Loop: Asks LLM to fix the broken code based on the runtime error.
         Includes safeguards for common matrix shape and syntax errors.
@@ -403,7 +408,7 @@ class NeuroSymbolicTranslator:
         """
         
         import ollama
-        response = ollama.chat(model=self.model_name, messages=[
+        response = await asyncio.to_thread(ollama.chat, model=self.model_name, messages=[
             {'role': 'user', 'content': prompt}
         ])
         code = response['message']['content']
@@ -427,6 +432,9 @@ if __name__ == "__main__":
     source_eq = r"\min_{\tilde{\mathbf{x}}} \| \boldsymbol{\mathcal{A}} - \tilde{\mathbf{z}} \|_F"
     context = "Financial Chaos Index with Tensor Factorization"
     
-    translator = NeuroSymbolicTranslator()
-    mapping = translator.map_variables(context, source_eq)
-    print(f"Mapping: {mapping}")
+    async def main():
+        translator = NeuroSymbolicTranslator()
+        mapping = await translator.map_variables(context, source_eq)
+        print(f"Mapping: {mapping}")
+
+    asyncio.run(main())
