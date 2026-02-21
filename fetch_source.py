@@ -37,12 +37,15 @@ def fetch_source(arxiv_id, output_dir="arxiv_source_cache"):
 
         try:
             with tarfile.open(tar_path, "r:gz") as tar:
-                tar.extractall(path=target_dir)
+                tar.extractall(path=target_dir, filter='data')
         except tarfile.ReadError:
              # Sometimes it's not a tar (e.g. PDF only or single file). 
              # Check if it is a PDF masked as tar? No, download_source gets source.
              # If source is not available, ArXiv might return PDF.
              print("Warning: Could not extract tar. Is the source available?")
+             return None
+        except tarfile.FilterError as e:
+             print(f"Security Error: Malicious tar file detected: {e}")
              return None
              
         # Cleanup tar
