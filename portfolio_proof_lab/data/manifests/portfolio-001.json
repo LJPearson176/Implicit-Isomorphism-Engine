@@ -1,0 +1,17 @@
+{
+  "experiment_id": "portfolio-001",
+  "config_version": "v1",
+  "universe_version": "universe-liquid-us-v1",
+  "data_snapshot": {
+    "provider": "placeholder-csv",
+    "path": "data/snapshots/portfolio-001.csv",
+    "sha256": "REPLACE_WITH_REAL_SNAPSHOT_HASH"
+  },
+  "input_files": [
+    {"path": "configs/experiment_v1.json", "sha256": "REPLACE_WITH_REAL_HASH"},
+    {"path": "configs/universe_v1.json", "sha256": "REPLACE_WITH_REAL_HASH"},
+    {"path": "configs/constraints_v1.json", "sha256": "REPLACE_WITH_REAL_HASH"}
+  ],
+  "immutable": true,
+  "created_at_utc": "2026-10-11T00:00:00Z"
+}

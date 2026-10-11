@@ -1,0 +1,42 @@
+{
+  "experiment_id": "portfolio-001",
+  "config_version": "v1",
+  "description": "Long-only constrained mean-variance prototype",
+  "universe_id": "universe-liquid-us-v1",
+  "rebalance": {
+    "frequency": "1D",
+    "decision_time_utc": "15:55:00",
+    "execution_time_utc": "15:59:00",
+    "bar_frequency": "1min",
+    "timezone": "UTC"
+  },
+  "estimation": {
+    "return_window_bars": 60,
+    "covariance_window_bars": 120,
+    "use_lookahead_guard": true
+  },
+  "optimizer": {
+    "risk_aversion": 5.0,
+    "turnover_penalty": 2.0,
+    "max_weight": 0.35,
+    "max_turnover": 0.25,
+    "max_variance": 0.0004,
+    "weight_sum_tolerance": 1e-6,
+    "bound_tolerance": 1e-8,
+    "solver": "SCS",
+    "solver_max_iters": 10000,
+    "solver_eps": 1e-6
+  },
+  "costs": {
+    "commission_bps": 1.0,
+    "spread_bps": 2.0,
+    "slippage_bps": 1.0,
+    "funding_bps_daily": 0.0
+  },
+  "benchmarks": {
+    "equal_weight": true,
+    "minimum_variance": true,
+    "optimized_fixed_signal": true,
+    "signal_non_optimized_rule": true
+  }
+}

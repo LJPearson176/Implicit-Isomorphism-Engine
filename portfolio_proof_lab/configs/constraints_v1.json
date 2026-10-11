@@ -1,0 +1,16 @@
+{
+  "constraints_version": "v1",
+  "fully_invested": true,
+  "long_only": true,
+  "max_weight": 0.35,
+  "max_turnover": 0.25,
+  "max_variance": 0.0004,
+  "accept_statuses": ["optimal", "optimal_inaccurate"],
+  "tolerances": {
+    "weight_sum": 1e-6,
+    "bound": 1e-8,
+    "turnover": 1e-8,
+    "variance": 1e-8,
+    "objective": 1e-6
+  }
+}

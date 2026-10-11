@@ -1,0 +1,9 @@
+{
+  "universe_id": "universe-liquid-us-v1",
+  "instruments": [
+    {"symbol": "SPY", "asset_type": "ETF", "currency": "USD", "min_order_qty": 1, "qty_precision": 0},
+    {"symbol": "QQQ", "asset_type": "ETF", "currency": "USD", "min_order_qty": 1, "qty_precision": 0},
+    {"symbol": "IWM", "asset_type": "ETF", "currency": "USD", "min_order_qty": 1, "qty_precision": 0},
+    {"symbol": "EFA", "asset_type": "ETF", "currency": "USD", "min_order_qty": 1, "qty_precision": 0}
+  ]
+}
